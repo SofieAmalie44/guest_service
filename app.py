@@ -1,11 +1,13 @@
 """
-Product Catalog Service:
-Styrer listen over tilgængelige produkter, inklusive detaljer såsom navn, beskrivelse, pris og billeder.
-Tilbyder funktionalitet til at søge, filtrere og kategorisere produkter.
+Guest Service:
+Styrer listen over gæster, inklusive detaljer såsom navn, kontak info og loyalitets point.
+Tilbyder funktionalitet til at søge, filtrere, updatere og slette gæster.
 """
 from flask import Flask, jsonify, request
 from services.guests import fetch_guests
 from services.guests import create_guest
+from services.guests import update_guest
+from services.guests import delete_guest
 
 app = Flask(__name__)
 
@@ -51,5 +53,28 @@ def add_guest():
     result, status_code = create_guest(data)
     return jsonify(result), status_code
 
+
+########### CRUD method POST ############
+
+@app.route('/guests/<int:guest_id>', methods=['PUT'])
+def modify_guest(guest_id):
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid json data"}), 400
+    
+    result, status_code = update_guest(guest_id, data)
+    return jsonify(result), status_code
+
+
+########### CRUD method DELETE ############
+
+@app.route('/guests/<int:guest_id>', methods=['DELETE'])
+def remove_guest(guest_id):
+    result, status_code = delete_guest(guest_id)
+    return jsonify(result), status_code
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 app.run(host='0.0.0.0', port=4000)

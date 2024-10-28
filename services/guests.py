@@ -61,7 +61,7 @@ def create_guest(data):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO guests (Fiestname, Lastname, Email, Phone, LoyaltyPoints) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO Guest (Firstname, Lastname, Email, Phone, LoyaltyPoints) VALUES (?, ?, ?, ?, ?)",
         (firstname, lastname, email, phone, loyalty_points)
     )
     conn.commit()
@@ -70,3 +70,53 @@ def create_guest(data):
 
     # return the newly created guests id as confirmation
     return {"message": "Guest created successfully", "GuestID": guest_id}, 201
+
+
+############   Update guest data   ##########
+
+def update_guest(guest_id, data):
+    firstname = data.get("Firstname")
+    lastname = data.get("Lastname")
+    email = data.get("Email")
+    phone = data.get("Phone")
+    loyalty_points = data.get("LoyaltyPoints")
+
+    if not firstname or not lastname or not email:
+        return {"error": "Fiestname, Lastname, and Email are required fields"}, 400
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE Guest 
+        SET Firstname = ?, Lastname = ?, Email = ?, Phone = ?, LoyaltyPoints = ?
+        WHERE GuestID = ?
+        ''', 
+        (firstname, lastname, email, phone, loyalty_points, guest_id)
+    )
+    conn.commit()
+    conn.close()
+
+    if cursor.rowcount == 0:
+        return {"error": "Guest not found"}, 404
+    
+    # return confirmation of successful update
+    return {"message": "Guest updated successfully"}, 200
+
+
+############   Delete guest    ##########
+
+def delete_guest(guest_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'DELETE FROM Guest where GuestID = ?',
+        (guest_id,)
+    )
+    conn.commit()
+    conn.close()
+
+    if cursor.rowcount == 0:
+        return {"error": "Guest not found"}, 404
+    
+    # return confirmation of successful removel
+    return {"message": "Guest deleted successfully"}, 200
