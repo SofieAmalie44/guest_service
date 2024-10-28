@@ -5,9 +5,12 @@ Tilbyder funktionalitet til at søge, filtrere og kategorisere produkter.
 """
 from flask import Flask, jsonify, request
 from services.guests import fetch_guests
+from services.guests import create_guest
 
 app = Flask(__name__)
 
+
+########### CRUD method GET ############
 
 @app.route('/guests', methods=['GET'])
 def get_all_guests():
@@ -35,6 +38,18 @@ def get_guest_by_loyalty(points):
     
     filtered_guests = [guest for guest in guests if guest['loyaltyPoints'] == points]
     return jsonify(filtered_guests)
+
+
+########### CRUD method POST ############
+
+@app.route('/guests', methods=['POST'])
+def add_guest():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid json data"}), 400
+    
+    result, status_code = create_guest(data)
+    return jsonify(result), status_code
 
 
 app.run(host='0.0.0.0', port=4000)
