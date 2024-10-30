@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS Guest (
     Country TEXT,
     Email TEXT NOT NULL,
     Phone INTEGER,
-    LoyaltyPoints INTEGER           
+    LoyaltyPoints INTEGER,
+    Review TEXT
 )
 ''')
 

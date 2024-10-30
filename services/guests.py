@@ -22,14 +22,15 @@ def fetch_guests():
 
     # Convert data to a list of dictionaries with required fields
     filtered_guests = [
-        {
+        { 
             "guestID": row["GuestID"],
             "firstname": row["Firstname"],
             "lastname": row["Lastname"],
             "country": row["Country"],
             "email": row["Email"],
             "phone": row["Phone"],
-            "loyaltyPoints": _calculate_loyaltyPoints(row["LoyaltyPoints"])
+            "loyaltyPoints": _calculate_loyaltyPoints(row["LoyaltyPoints"]),
+            "review": row["Review"]
         }
         for row in rows
     ]
